@@ -1,5 +1,4 @@
 :- use_module(library(scasp)).
 
-p(A) :- not q(A).
+p(A) :- not w(A).
 q(A) :- not p(A).
-?- p(A).
