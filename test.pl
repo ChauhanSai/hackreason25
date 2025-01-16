@@ -1,4 +1,3 @@
-:- use_module(library(scasp)).
-
-p(A) :- not w(A).
-q(A) :- not p(A).
+append_element(Elem, [], [Elem]).
+append_element(Elem, [Head|Tail], [Head|Result]) :-
+    append_element(Elem, Tail, Result).!

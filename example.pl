@@ -52,3 +52,19 @@ female(jill).
 female(ann).
 female(kim).
 female(martha).
+
+oneWayTrip(CURRENT, END, BUDGET, HOLIDAYS, CURRENTTOTAL, VISITED) :- 
+    % make sure that these are valid cities
+    city(CURRENT),
+    city(END),
+    % check to make sure its a valid route
+    route(CURRENT, NEXT, PRICE, DAY),
+    % check to make sure its in budget
+    CURRENTTOTAL + PRICE .<. BUDGET,
+    DAY.<.HOLIDAYS,
+    NEWTOTAL is CURRENTTOTAL + PRICE
+    % add the projected city to the visited list
+    add_element(PROJECTED, VISITED, NEWVISITED)
+    % find a possible next destination
+    not member(NEXT, VISITED),
+    oneWayTrip(NEXT, END, BUDGET, HOLIDAYS, NEWTOTAL, NEWVISITED).
