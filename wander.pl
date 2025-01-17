@@ -17,7 +17,27 @@ remove_element(Elem, [Head|Tail], [Head|Result]) :-
 % append an element to the front of a list
 append_element(Elem, List, [Elem|List]).
 
+% reverse lists elements
+reverse_list([], []).
+reverse_list([Head|Tail], Reversed) :-
+    reverse_list(Tail, ReversedTail),
+    reverse_element(ReversedTail, [Head], Reversed).
+
+reverse_element([], List, List).
+reverse_element([Head|Tail], List, [Head|Result]) :-
+    reverse_element(Tail, List, Result).
+
+% get element length of list
+get_length([], 0). 
+get_length([_| Tail], Length) :-
+    get_length(Tail, TailLength),
+    Length is TailLength + 1.
+
 get_head([ HEAD | _], HEAD).
+
+% Collect all cities from city/1 facts
+all_cities(Cities) :-
+    findall(City, city(City), Cities).
 
 % city data
 city(prague).
@@ -166,12 +186,13 @@ hotel_cost(CITY, CURRENTDAY, [PREVDAY | _], X) :-
 
 % base case
 oneWayTrip(END, END, BUDGET, HOLIDAYS, CURRENTTOTAL, VISITED, FLIGHTDAYS, TOTALCOST, PLACESVISITED, FINALFLIGHTDAYS) :-
-    get_head(FLIGHTDAYS, CURDAY),
-    hotel_cost(END, HOLIDAYS, CURDAY, COST),
+    hotel_cost(END, HOLIDAYS, FLIGHTDAYS, COST),
     NEWTOTAL is CURRENTTOTAL + COST,
-    TOTALCOST is NEWTOTAL,
-    PLACESVISITED is VISITED,
-    FINALFLIGHTDAYS is FLIGHTDAYS.
+    TOTALCOST = NEWTOTAL,
+    reverse_list(VISITED, PLACESVISITED),
+    % PLACESVISITED = VISITED,
+    reverse_list(FLIGHTDAYS, FINALFLIGHTDAYS).
+    % FINALFLIGHTDAYS = FLIGHTDAYS.
     
 
 % recursive call
@@ -198,10 +219,13 @@ oneWayTrip(CURRENT, END, BUDGET, HOLIDAYS, CURRENTTOTAL, VISITED, FLIGHTDAYS, TO
     append_element(NEXT, VISITED, NEWVISITED),
 
     % add the flight days to list
-    append_element(DAY, FLIGHTDAYS, NEWFLIGHTDAYS).
+    append_element(DAY, FLIGHTDAYS, NEWFLIGHTDAYS),
 
-    % oneWayTrip(NEXT, END, BUDGET, HOLIDAYS, NEWTOTAL, NEWVISITED, NEWFLIGHTDAYS, TOTALCOST, PLACESVISITED, FINALFLIGHTDAYS).
+    oneWayTrip(NEXT, END, BUDGET, HOLIDAYS, NEWTOTAL, NEWVISITED, NEWFLIGHTDAYS, TOTALCOST, PLACESVISITED, FINALFLIGHTDAYS).
 
 
 trip(START,END,BUDGET,HOLIDAYS, TOTALCOST, PLACESVISITED, FINALFLIGHTDAYS) :-
     oneWayTrip(START,END,BUDGET,HOLIDAYS, 0, [START], [1], TOTALCOST, PLACESVISITED, FINALFLIGHTDAYS).
+
+% test run
+?- trip(prague, vienna, 200000, 16, X, Y, Z). 
