@@ -9,3 +9,10 @@
 
 # Visual Studio Code
 .vscode/
+
+# Backend
+backend/.json
+
+# Frontend
+frontend/package.json
+frontend/package-lock.json

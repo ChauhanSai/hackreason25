@@ -35,10 +35,10 @@ for city in cities:
 file = open("my-wander.pl", "w")
 file.write("% city data\n")
 for city in cities:
-    print(f'city({city}).\n')
-    file.write(f'city({city}).\n')
-    print(f'hotel({city}, {random.randint(40, 200)}).\n')
-    file.write(f'hotel({city}, {random.randint(40, 200)}).\n')
+    print(f'city({city.lower()}).\n')
+    file.write(f'city({city.lower()}).\n')
+    print(f'hotel({city.lower()}, {random.randint(40, 200)}).\n')
+    file.write(f'hotel({city.lower()}, {random.randint(40, 200)}).\n')
 
 file.write("\n")
 
@@ -83,12 +83,12 @@ for i in range(len(codePairs)):
         # print(results)
 
         for flights in results["best_flights"]:
-            print(f'route({cityPairs[i][0]},{cityPairs[i][1]},{flights["price"]},{currentDay}).\n')
-            file.write(f'route({cityPairs[i][0]},{cityPairs[i][1]},{flights["price"]},{currentDay}).\n')
+            print(f'route({cityPairs[i][0].lower()},{cityPairs[i][1].lower()},{flights["price"]},{currentDay}).\n')
+            file.write(f'route({cityPairs[i][0].lower()},{cityPairs[i][1].lower()},{flights["price"]},{currentDay}).\n')
 
         for flights in results["other_flights"]:
-            print(f'route({cityPairs[i][0]},{cityPairs[i][1]},{flights["price"]},{currentDay}).\n')
-            file.write(f'route({cityPairs[i][0]},{cityPairs[i][1]},{flights["price"]},{currentDay}).\n')
+            print(f'route({cityPairs[i][0].lower()},{cityPairs[i][1].lower()},{flights["price"]},{currentDay}).\n')
+            file.write(f'route({cityPairs[i][0].lower()},{cityPairs[i][1].lower()},{flights["price"]},{currentDay}).\n')
 
         # Iterate by one day
         currentDate = currentDate + timedelta(days=1)
