@@ -19,6 +19,7 @@ startDate = "2025-01-20"
 startDate = datetime.strptime(startDate, "%Y-%m-%d")
 #holidays = input("Length of trip (days): ")
 holidays = "5"
+budget = "200000"
 endDate = startDate + timedelta(days=int(holidays))
 
 # Get cities
@@ -98,6 +99,6 @@ with open("wander.pl.example", "r") as copyFile:
     for line in copyFile:
         file.write(line)
 
-file.write(f'?- trip({cities[0]}, {cities[len(cities) - 1]}, 200000, {holidays}, X, Y, Z). ')
+file.write(f'?- trip({cities[0]}, {cities[len(cities) - 1]}, {budget}, {holidays}, X, Y, Z). ')
 
 file.close()
