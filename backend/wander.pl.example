@@ -1,0 +1,95 @@
+
+:- use_module(library(scasp)).
+
+% list queries
+% check if an element is in a list
+is_member(Element, [Element | _]).
+is_member(Element, [_ | Tail]) :-
+    is_member(Element, Tail).
+
+% remove an element from a list
+remove_element(_, [], []).
+remove_element(Elem, [Elem|Tail], Result) :-
+    remove_element(Elem, Tail, Result).
+remove_element(Elem, [Head|Tail], [Head|Result]) :-
+    Elem \= Head,
+    remove_element(Elem, Tail, Result).
+
+% append an element to the front of a list
+append_element(Elem, List, [Elem|List]).
+
+% reverse lists elements
+reverse_list([], []).
+reverse_list([Head|Tail], Reversed) :-
+    reverse_list(Tail, ReversedTail),
+    reverse_element(ReversedTail, [Head], Reversed).
+
+reverse_element([], List, List).
+reverse_element([Head|Tail], List, [Head|Result]) :-
+    reverse_element(Tail, List, Result).
+
+% get element length of list
+get_length([], 0). 
+get_length([_| Tail], Length) :-
+    get_length(Tail, TailLength),
+    Length is TailLength + 1.
+
+get_head([ HEAD | _], HEAD).
+
+% Collect all cities from city/1 facts
+all_cities(Cities) :-
+    findall(City, city(City), Cities).
+
+% get total hotel cost for stay based on flight days
+hotel_cost(CITY, CURRENTDAY, [PREVDAY | _], X) :-
+    hotel(CITY, PRICE),
+    % access first and next element as CURRENTDAY and PREVDAY
+    DAYS is CURRENTDAY - PREVDAY,
+    X is DAYS * PRICE.
+
+% logic will find all possible trips to visit every city
+
+% base case
+oneWayTrip(END, END, BUDGET, HOLIDAYS, CURRENTTOTAL, VISITED, FLIGHTDAYS, TOTALCOST, PLACESVISITED, FINALFLIGHTDAYS) :-
+    hotel_cost(END, HOLIDAYS, FLIGHTDAYS, COST),
+    NEWTOTAL is CURRENTTOTAL + COST,
+    TOTALCOST = NEWTOTAL,
+    reverse_list(VISITED, PLACESVISITED),
+    % PLACESVISITED = VISITED,
+    reverse_list(FLIGHTDAYS, FINALFLIGHTDAYS).
+    % FINALFLIGHTDAYS = FLIGHTDAYS.
+    
+
+% recursive call
+oneWayTrip(CURRENT, END, BUDGET, HOLIDAYS, CURRENTTOTAL, VISITED, FLIGHTDAYS, TOTALCOST, PLACESVISITED, FINALFLIGHTDAYS) :-
+    % make sure that these are valid cities
+    city(CURRENT), % debug
+    city(END), % debug
+
+    % find next possible flight to next possible destination
+    route(CURRENT, NEXT, PRICE, DAY),
+    get_head(FLIGHTDAYS, CURDAY),
+    DAY .>. CURDAY,
+
+    % find a possible next destination
+    not is_member(NEXT, VISITED),
+
+    % check to make sure its in budget & in time range
+    hotel_cost(CURRENT, DAY, FLIGHTDAYS, HOTELCOST),
+    (CURRENTTOTAL + PRICE + HOTELCOST) .<. BUDGET,
+    DAY.<.HOLIDAYS,
+    NEWTOTAL is CURRENTTOTAL + PRICE + HOTELCOST,
+
+    % add the projected city to the visited list
+    append_element(NEXT, VISITED, NEWVISITED),
+
+    % add the flight days to list
+    append_element(DAY, FLIGHTDAYS, NEWFLIGHTDAYS),
+
+    oneWayTrip(NEXT, END, BUDGET, HOLIDAYS, NEWTOTAL, NEWVISITED, NEWFLIGHTDAYS, TOTALCOST, PLACESVISITED, FINALFLIGHTDAYS).
+
+
+trip(START,END,BUDGET,HOLIDAYS, TOTALCOST, PLACESVISITED, FINALFLIGHTDAYS) :-
+    oneWayTrip(START,END,BUDGET,HOLIDAYS, 0, [START], [1], TOTALCOST, PLACESVISITED, FINALFLIGHTDAYS).
+
+% run
