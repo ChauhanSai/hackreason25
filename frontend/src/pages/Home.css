@@ -1,0 +1,43 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+}
+
+.homeBackground {
+    height: 100vh;
+    width: auto;
+    background-image: url('/public/images/Home.svg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.learnMore {
+    width: 250px;
+    height: 40px;
+    margin:auto;
+    margin-bottom:30%;
+    background-color: #EDF0F4;
+    border-radius: 5px;
+    padding: 0px;
+    text-align: center;
+    padding-top: 10px;
+    margin-top: 26%;
+}
+
+.hoverEnlarge {
+    animation-duration: 2s;
+    transition: transform .3s ease-in-out;
+}
+
+.hoverEnlarge:hover {
+    
+    transform: scale(1.05);
+    
+}
+
+.learnMoreText {
+    font-size: 25px;
+}
