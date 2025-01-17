@@ -213,7 +213,7 @@ def run_script():
         cities = request.args.get('cities')
     except:
         date = "2025-01-20"  # hard-coded
-        length = "5" # hard-coded
+        length = "16" # hard-coded
         budget = "200000" # hard-coded
         cities = "prague,frankfurt,vienna,rome" # hard-coded
     print(date, length, budget, cities)
