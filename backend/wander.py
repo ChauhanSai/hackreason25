@@ -162,9 +162,7 @@ def run_prolog_script():
 def process_bindings():
     with open("output.txt", "r") as bindingsFile:
         bindings_input = bindingsFile.read()[9:-3].replace("[ \'Y\'", ",[ \'Y\'").replace("[ \'Z\'", ",[ \'Z\'")
-        print(bindings_input)
-    bindings_input = "[[ ['X', 1606], ['Y', ['prague', 'frankfurt', 'vienna', 'rome']], ['Z', [1, 2, 3, 4]] ],[ ['X', 1610], ['Y', ['prague', 'frankfurt', 'vienna', 'rome']], ['Z', [1, 2, 3, 4]] ],[ ['X', 1809], ['Y', ['prague', 'frankfurt', 'vienna', 'rome']], ['Z', [1, 2, 3, 4]] ],[ ['X', 1686], ['Y', ['prague', 'frankfurt', 'vienna', 'rome']], ['Z', [1, 2, 3, 4]] ],[ ['X', 1864], ['Y', ['prague', 'frankfurt', 'vienna', 'rome']], ['Z', [1, 2, 3, 4]] ], [] ]"
-
+        
     # Replace the invalid syntax with correct Python list syntax
     bindings_input_corrected = bindings_input.replace("][", "],[")
 
@@ -226,4 +224,8 @@ def run_script():
     return jsonify(data)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    #app.run(debug=True)
+
+    run_prolog_script()
+
+
