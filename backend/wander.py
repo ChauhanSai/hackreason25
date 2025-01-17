@@ -2,9 +2,39 @@ import random
 from dotenv import load_dotenv
 import os
 from datetime import datetime, timedelta
-from json import loads
 from serpapi import GoogleSearch
 from airports import airports
+
+def get_hotel(city, startDate):
+    # Load the .env file and retrieve the API keys
+    load_dotenv()
+    API_KEY = os.getenv("API_KEY")
+
+    params = {
+        "engine": "google_hotels",
+        "q": city,
+        "check_in_date": startDate,
+        "check_out_date": startDate,
+        "adults": "1",
+        "currency": "USD",
+        "hl": "en",
+        "api_key": API_KEY,
+    }
+
+    search = GoogleSearch(params)
+    results = search.get_dict()
+
+    sum = 0
+    average = 0
+    for property in results["properties"]:
+        try:
+            sum += property["rate_per_night"]["extracted_lowest"]
+            average += 1
+        except KeyError:
+            continue
+
+    return round(sum/average)
+
 
 def create_wander(startDate, holidays, budget, cities):
     """
@@ -19,14 +49,10 @@ def create_wander(startDate, holidays, budget, cities):
     API_KEY = os.getenv("API_KEY")
 
     # Get dates of travel
-    # startDate = "2025-01-20" # hard-coded
     startDate = datetime.strptime(startDate, "%Y-%m-%d")
-    # holidays = "5" # hard-coded
-    # budget = "200000" # hard-coded
     endDate = startDate + timedelta(days=int(holidays))
 
     # Get cities
-    # cities = "prague,frankfurt,vienna,rome" # hard-coded
     cities = cities.upper().split(",")
 
     # Get codes from each city
@@ -40,8 +66,8 @@ def create_wander(startDate, holidays, budget, cities):
     for city in cities:
         print(f'city({city.lower()}).\n')
         file.write(f'city({city.lower()}).\n')
-        print(f'hotel({city.lower()}, {random.randint(40, 200)}).\n')
-        file.write(f'hotel({city.lower()}, {random.randint(40, 200)}).\n')
+        print(f'hotel({city.lower()}, {get_hotel(city, startDate.strftime("%Y-%m-%d"))}).\n')
+        file.write(f'hotel({city.lower()}, {get_hotel(city, startDate.strftime("%Y-%m-%d"))}).\n')
 
     file.write("\n")
 
@@ -114,7 +140,7 @@ def run_prolog_script():
     command = """
         export PATH=$PATH:~/.ciaoroot/v1.24.0-m1/build/bin/
         source ~/.bashrc
-        scasp my_wander.pl --txt -s5
+        scasp my_wander.pl --txt -s12
         """
 
     # Run the command using subprocess with a shell
@@ -167,6 +193,9 @@ def process_bindings():
     # Call the function
     parsed_data = parse_bindings(bindings)
     print(parsed_data)
+
+    os.remove("output.txt")
+
     return parsed_data
 
 
@@ -180,13 +209,19 @@ CORS(app)  # Enable CORS for all routes
 
 @app.route('/api/run-script', methods=['GET'])
 def run_script():
-    date = request.args.get('date')  # Get the argument from the URL query string
-    length = int(request.args.get('length'))
-    budget = int(request.args.get('budget'))
-    cities = request.args.get('cities')
+    try:
+        date = request.args.get('date')  # Get the argument from the URL query string
+        length = int(request.args.get('length'))
+        budget = int(request.args.get('budget'))
+        cities = request.args.get('cities')
+    except:
+        date = "2025-01-20"  # hard-coded
+        length = "5" # hard-coded
+        budget = "200000" # hard-coded
+        cities = "prague,frankfurt,vienna,rome" # hard-coded
     print(date, length, budget, cities)
 
-    # create_wander(date, length, budget, cities)
+    # create_wander(date, length, budget, cities) # Runs API
     run_prolog_script()
     data = process_bindings()
     return jsonify(data)
