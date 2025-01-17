@@ -17,11 +17,7 @@ const Form = () => {
             Budget: "",
             Destinations: ""
         });
-
-
-    const toggleLeftBox = () => {
-        setGenerated(prevState => !prevState);
-    }
+        
 
     const handleChange = (e) => {
         const { name, value} = e.target;
