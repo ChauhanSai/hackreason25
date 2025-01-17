@@ -224,9 +224,6 @@ def run_script():
     return jsonify(data)
 
 if __name__ == '__main__':
-    #app.run(debug=True)
-
-    run_prolog_script()
-    process_bindings()
+    app.run(debug=True)
 
 
