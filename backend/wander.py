@@ -175,6 +175,9 @@ from flask import Flask, jsonify, request
 
 app = Flask(__name__)
 
+from flask_cors import CORS
+CORS(app)  # Enable CORS for all routes
+
 @app.route('/api/run-script', methods=['GET'])
 def run_script():
     date = request.args.get('date')  # Get the argument from the URL query string
