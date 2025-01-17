@@ -4,7 +4,7 @@ import os
 from datetime import datetime, timedelta
 from json import loads
 from serpapi import GoogleSearch
-from backend.airports import airports
+from airports import airports
 
 def create_wander(startDate, holidays, budget, cities):
     """
