@@ -11,7 +11,7 @@
 .vscode/
 
 # Backend
-backend/.json
+backend/serpapi
 
 # Frontend
 frontend/package.json
