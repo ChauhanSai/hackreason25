@@ -178,8 +178,8 @@ app = Flask(__name__)
 @app.route('/api/run-script', methods=['GET'])
 def run_script():
     date = request.args.get('date')  # Get the argument from the URL query string
-    length = request.args.get('length')
-    budget = request.args.get('budget')
+    length = int(request.args.get('length'))
+    budget = int(request.args.get('budget'))
     cities = request.args.get('cities')
     print(date, length, budget, cities)
 
