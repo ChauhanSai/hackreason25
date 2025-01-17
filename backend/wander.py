@@ -164,7 +164,7 @@ def process_bindings():
 
     with open("output.txt", "r") as bindingsFile:
         bindings_input = re.sub(r'(?<!\')([a-zA-Z]+)(?!\')', r"'\1'", bindingsFile.read()[9:-3].replace("][", "],["))
-        print(bindings_input)
+        # print(bindings_input)
 
     # Use ast.literal_eval to safely evaluate the string as a Python list
     import ast
