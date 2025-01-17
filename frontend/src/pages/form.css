@@ -228,3 +228,38 @@
     text-decoration: none;
     color: inherit;
 }
+
+/* Add to form.css */
+.trips {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.trip {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin-top:10px;
+}
+
+.trip p {
+    margin: 5px 0;
+}
+
+.generate-more-btn {
+    width:100%;
+    margin-top: 30px;
+    padding: 10px 20px;
+    background-color: #95B4C6;
+    color: #0A2435;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.generate-more-btn:hover {
+    background-color: white;
+}

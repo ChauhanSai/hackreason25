@@ -1,56 +1,73 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom'
 import './form.css';
+import axios from 'axios';
 import "animate.css"
 
 const Form = () => {
-    const [showGenerated, setGenerated] = useState(false);
+
+
+        const [showGenerated, setGenerated] = useState(false);
+        const [currentIndex, setCurrentIndex] = useState(0);
+        const [tripsToDisplay, setTripsToDisplay] = useState([]);
+        const [result, setResult] = useState(null);
+        const [values, setValues] = useState({
+            StartDate: "",
+            Holidays: "",
+            Budget: "",
+            Destinations: ""
+        });
+
 
     const toggleLeftBox = () => {
         setGenerated(prevState => !prevState);
     }
 
-    const [values, setValues] = useState({
-        StartDate: "",
-        Holidays: "",
-        Budget: "",
-        Destinations: []
-    })
-
     const handleChange = (e) => {
         const { name, value} = e.target;
 
             setValues({ ...values, [name]: value });
+
     }
+
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        console.log(values)
+        e.preventDefault();
+        console.log(values);
 
-        // const response = await fetch('http://localhost:4000/api/users/' + user.Email, {
-        //     method: 'PATCH',
-        //     body: JSON.stringify(User),
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     }
-        // })
+        try {
+            const response = await axios.get('http://127.0.0.1:5000/api/run-script', {
+                params: { 
+                    date: values.StartDate, 
+                    length: values.Holidays, 
+                    budget: values.Budget, 
+                    cities: values.Destinations 
+                }
+            });
+            setResult(response.data)
+            setTripsToDisplay(response.data.slice(0, 3));
+            setGenerated(true);
+            setCurrentIndex(3);
+            console.log("Result:", response.data);
+            console.log(tripsToDisplay)
+        } catch (error) {
+            console.error("Error running the Python script:", error);
+        }
 
-        // const json = await response.json()
+    };
+
+    const handleGenerateMore = () => {
+        console.log(tripsToDisplay)
+        console.log(currentIndex)
+        const nextIndex = currentIndex + 3;
+        setTripsToDisplay([
+            ...result.slice(currentIndex, currentIndex + 3)
+        ]);
         
-        // if (response.ok){
-        //     setFormSubmitted(true)
-        //     setTimeout(() => {
-        //        setFormSubmitted(false)
-        //     }, 3000)
+        setCurrentIndex(nextIndex);
+    };
 
-        //     //dispatch({type: 'SET_USER', payload: json})
-
-        //     console.log("new data added, json")
-        //     console.log(json)
-        // }
-        toggleLeftBox()
-
-    }
+    
 
 return (
     <div className='formBackground animate__fadeIn animate__animated fade'>
@@ -59,9 +76,23 @@ return (
         </Link> 
         <div className='container'>
             <div className='container-left'>
-                {showGenerated && (
+                {showGenerated &&  tripsToDisplay.length > 0 && (
                     <div className={`box2 ${showGenerated ? 'show' : ''}`}> 
                         <p className='formTitle2'>Heres what we found:</p>
+                        <div className="trips">
+                            {tripsToDisplay.map((trip, index) => (
+                                <div key={index} className="trip">
+                                    <p><strong>Price:</strong> ${trip.PRICE}</p>
+                                    <p><strong>Destinations:</strong> {Array.isArray(trip.VISITS) ? trip.VISITS.join(", ") : 'N/A'}</p>
+                                    <p><strong>Flights on Days:</strong> {Array.isArray(trip.DAYS) ? trip.DAYS.join(", ") : 'N/A'}</p>
+                                </div>
+                            ))}
+                        </div>
+                            {currentIndex < result.length && (
+                                <button className="generate-more-btn" onClick={handleGenerateMore}>
+                                    Generate More
+                                </button>
+                            )}
                     </div>
                 )}
             </div>
@@ -83,7 +114,7 @@ return (
                     </div>
 
                     <label className="edit-label" htmlFor="Destinations" draggable="false">Where To?</label>
-                    <textarea className="edit-resize" name="Destinations" id="aboutMe" cols="30" rows="" value={values.aboutMe}
+                    <textarea className="edit-resize" name="Destinations" id="Destinations" cols="30" rows="" value={values.aboutMe}
                     onChange={(e) => handleChange(e)}></textarea>
                     
                     <button type='submit' className='edit-submit' draggable="false">Generate</button>
