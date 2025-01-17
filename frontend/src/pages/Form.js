@@ -60,7 +60,7 @@ return (
         <div className='container'>
             <div className='container-left'>
                 {showGenerated && (
-                    <div className='box2'> 
+                    <div className={`box2 ${showGenerated ? 'show' : ''}`}> 
                         <p className='formTitle2'>Heres what we found:</p>
                     </div>
                 )}

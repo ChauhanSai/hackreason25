@@ -198,6 +198,12 @@
     background-color: #0A2435;
     border-radius: 20px;
     padding: 20px;
+    opacity: 0; 
+    animation: fadeIn 0.3s forwards; 
+}
+
+.box2.show {
+    opacity: 1;
 }
 
 .formTitle2 {
