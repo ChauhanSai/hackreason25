@@ -160,16 +160,16 @@ def run_prolog_script():
 
 
 def process_bindings():
+    import re
+
     with open("output.txt", "r") as bindingsFile:
-        bindings_input = bindingsFile.read()[9:-3].replace("[ \'Y\'", ",[ \'Y\'").replace("[ \'Z\'", ",[ \'Z\'")
-        
-    # Replace the invalid syntax with correct Python list syntax
-    bindings_input_corrected = bindings_input.replace("][", "],[")
+        bindings_input = re.sub(r'(?<!\')([a-zA-Z]+)(?!\')', r"'\1'", bindingsFile.read()[9:-3].replace("][", "],["))
+        print(bindings_input)
 
     # Use ast.literal_eval to safely evaluate the string as a Python list
     import ast
 
-    bindings = ast.literal_eval(bindings_input_corrected)
+    bindings = ast.literal_eval(bindings_input)
 
     # Function to parse the given structure into the desired format
     def parse_bindings(bindings):
@@ -227,5 +227,6 @@ if __name__ == '__main__':
     #app.run(debug=True)
 
     run_prolog_script()
+    process_bindings()
 
 
